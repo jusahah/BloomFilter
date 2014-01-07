@@ -1,0 +1,235 @@
+
+<html>
+
+<style>
+
+.box {
+
+	background-color: #eee; 
+	font-size: 7px;
+	
+	text-align: center;
+
+	color: #343434;
+}
+
+
+.graph_holder {
+
+	list-style-type: none;
+	width: 740px;
+
+
+}
+
+.graph_holder li {
+
+	list-style: none;
+	width: 12px;
+	height: 12px;
+	margin: 1px;
+	display: inline-block;
+}
+
+.graph_holder li.heat_0 {
+
+	background-color: #eee; 
+}
+
+.graph_holder li.heat_1 {
+
+	background-color: #FFEBE6; 
+}
+
+.graph_holder li.heat_2 {
+
+	background-color: #FFC2B2; 
+}
+
+.graph_holder li.heat_3 {
+
+	background-color: #FF9980; 
+}
+
+.graph_holder li.heat_4 {
+
+	background-color: #FF704D; 
+}
+
+.graph_holder li.heat_5 {
+
+	background-color: #FF4719; 
+}
+
+
+.graph_holder li.heat_6 {
+
+	background-color: #FF3300; 
+}
+
+.graph_holder li.heat_7 {
+
+	background-color: #CC2900; 
+}
+
+
+.graph_holder li.heat_8 {
+
+	background-color: #B22400; 
+}
+
+.graph_holder li.heat_9 {
+
+	background-color: #801A00; 
+}
+
+
+
+
+</style>
+<body>
+
+	<div class="graph_holder" id="graph1"></div>
+	<button id="empty">New Graph</button>
+	<input type='text' id="the_string"></input>
+	<button id="add">Add</button>
+	<button id="check">Check</button>
+	<button id="false_ratio">False Positives -ratio</button>
+	<button id="full_test">Full Test</button>
+	<div id="info_area"></div>
+	</body>
+	</html>
+<script src="Bloom.js"></script>
+
+<script>
+
+var testArea = {
+
+	test : null,
+	graph_area : document.getElementById('graph1'),
+
+	newTest : function(length, bitsPerUnit) {
+
+		
+
+
+		var length = length || 1000;
+		var bitsPerUnit = bitsPerUnit || 4;
+
+		var bloom2 = new Bloom({
+
+			pituus: length,
+			bitsPerUnit: bitsPerUnit
+		});
+
+		this.test = null;
+
+		this.test = new BloomTestSuite(bloom2, this.graph_area);
+	}
+
+
+	/*
+
+	var bloomer = new Bloom({
+
+		pituus: 20,
+		bitsPerUnit: 3
+
+
+	});
+
+	bloomer.add('Testi');
+	bloomer.add('Gotcha');
+	bloomer.add('Whatsup Mate');
+	bloomer.add('Whatsup MateY');
+	console.log(bloomer.getHeatmap());
+	console.log(bloomer.getColMap());
+
+	var bloom2 = new Bloom({
+
+		pituus: 100,
+		bitsPerUnit: 6
+	})
+	var graphPlace = document.getElementById('graph1');
+	var test = new BloomTestSuite(bloom2, graphPlace);
+	test.launch(50);
+	console.log(test.falsePositiveRate(100));
+*/
+
+}
+
+
+
+var initClickHandling = function() {
+
+	var addButton = document.getElementById('add');
+	var newButton = document.getElementById('empty');
+	var checkButton = document.getElementById('check');
+	var fullButton = document.getElementById('full_test');
+	var falsePosButton = document.getElementById('false_ratio');
+	var stringField = document.getElementById('the_string');
+	var infoArea = document.getElementById('info_area');
+
+	var addString = function() {
+
+		console.log("Klikattu add");
+
+		testArea.test.addOne(stringField.value);
+		infoArea.innerHTML = "Term '" + stringField.value + "' was added.";
+		stringField.value = "";
+
+
+	}
+
+	var newGraph = function() {
+
+		
+		testArea.newTest(getNumFromField());
+
+	}
+
+	var doFullTest = function() {
+
+		
+
+		testArea.test.launch(getNumFromField());
+	}
+
+	var checkString = function() {
+
+		var exists = testArea.test.check(stringField.value);
+
+		infoArea.innerHTML = "Term '" + stringField.value + "' was found? " + exists;
+		stringField.value = "";
+
+
+	}
+
+	var calcFalsePos = function() {
+
+		var ratio = testArea.test.falsePositiveRate(getNumFromField());
+		infoArea.innerHTML = "False positives ratio: " + ratio;
+
+	}
+
+	var getNumFromField = function() {
+
+		return (isNaN(stringField.value) || stringField.value === "") ? 100 : stringField.value;
+	}
+
+	
+
+	addButton.addEventListener("click", addString, false);
+	newButton.addEventListener("click", newGraph, false);
+	fullButton.addEventListener("click", doFullTest, false);
+	checkButton.addEventListener("click", checkString, false);
+	falsePosButton.addEventListener("click", calcFalsePos, false);
+}
+
+testArea.newTest();
+//testArea.test.addOne("jsaj");
+initClickHandling();
+
+
+
+</script>
